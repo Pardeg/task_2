@@ -10,6 +10,7 @@ export const userValidationSchema = Joi.object({
 export const userDeleteValidationSchema = Joi.object({
     id: Joi.string().required()
 });
+
 export const userCreateValidationSchema = Joi.object({
     login: Joi.string().required(),
     password: Joi.string().alphanum().required(),

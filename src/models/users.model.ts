@@ -1,5 +1,5 @@
 
-module.exports = (sequelize:any, Sequelize:any) => {
+export const userModel = (sequelize:any, Sequelize:any) => {
     const USERS = sequelize.define("users", {
       USER_ID: {
         type: Sequelize.UUID,

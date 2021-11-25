@@ -6,7 +6,6 @@ import Sequelize from 'sequelize';
 class UserService {
     getUserById = async (id: string, res: any) => {
         try {
-            console.log(id);
             const user = await db.users.findOne({ where: { USER_ID: Number(id), DELETED: false } });
             const {
                 dataValues: { LOGIN: login, AGE: age }
