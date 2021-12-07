@@ -2,6 +2,7 @@ import { json } from 'stream/consumers';
 import { db } from '../data-access';
 import { v4 as uuidv4 } from 'uuid';
 import Sequelize from 'sequelize';
+import { errorHandler } from '../helpers/errorHandler';
 
 class UserService {
     getUserById = async (id: string, res: any) => {
@@ -11,7 +12,8 @@ class UserService {
                 dataValues: { LOGIN: login, AGE: age }
             } = user;
             return res.json({ data: { login, age } });
-        } catch (e) {
+        } catch (e:any) {
+            errorHandler('getUserById',e.message,id)
             res.sendStatus(404);
         }
     };
@@ -24,8 +26,8 @@ class UserService {
             } = data;
 
             return res.json({ data: { ...restFields } });
-        } catch (e) {
-            console.log(e);
+        } catch (e:any) {
+            errorHandler('createUser',e.message,login,age,password)
             res.sendStatus(404);
         }
     };
@@ -34,8 +36,8 @@ class UserService {
         try {
             await db.users.update({ DELETED: true }, { where: { USER_ID: id } });
             res.json('User Deleted');
-        } catch (e) {
-            console.log(e);
+        } catch (e:any) {
+            errorHandler('deleteUser',e.message,id)
             res.send(404);
         }
     };
@@ -46,8 +48,8 @@ class UserService {
             const [ok] = await db.users.update({ LOGIN: login, PASSWORD: password, AGE: age }, { where: { USER_ID: id, DELETED: false } });
             if (ok === 1) return res.json('User updated');
             res.sendStatus(404);
-        } catch (e) {
-            console.log(e);
+        } catch (e:any) {
+            errorHandler('updateUser',e.message,data)
             res.sendStatus(404);
         }
     };
@@ -65,8 +67,8 @@ class UserService {
             }
 
             return res.sendStatus(404);
-        } catch (e) {
-            console.log(e);
+        } catch (e:any) {
+            errorHandler('getUserSuggestions',e.message,limit,loginSubstring)
             res.sendStatus(404);
         }
     };

@@ -1,3 +1,4 @@
+import { errorHandler } from './../helpers/errorHandler';
 import { json } from 'stream/consumers';
 import { userGroups } from './../models/userGroups.model';
 import { db } from '../data-access';
@@ -14,7 +15,8 @@ class GroupService {
         try {
             await db.groups.create({ GROUP_ID: uuidv4(), NAME: name, PERMISSIONS: this.basePremissions });
             res.json(`Group ${name} created`);
-        } catch (e) {
+        } catch (e:any) {
+            errorHandler('createGroup',e.message,name)
             res.sendStatus(500);
         }
     };
@@ -23,7 +25,8 @@ class GroupService {
         try {
             const { NAME } = await db.groups.findOne({ where: { GROUP_ID: id } });
             res.json(NAME);
-        } catch (e) {
+        } catch (e:any) {
+            errorHandler('getGroupById',e.message,id)
             res.sendStatus(404);
         }
     };
@@ -33,7 +36,8 @@ class GroupService {
             const { id, name } = data;
             await db.groups.update({ NAME: name }, { where: { GROUP_ID: id } });
             res.json('Updated');
-        } catch (e) {
+        } catch (e:any) {
+            errorHandler('updateGroupInfo',e.message,data)
             res.sendStatus(404);
         }
     };
@@ -42,7 +46,8 @@ class GroupService {
         try {
             await db.groups.destroy({ where: { GROUP_ID: id } });
             res.sendStatus(200);
-        } catch (e) {
+        } catch (e:any) {
+            errorHandler('deleteGroup',e.nessage,id)
             res.sendStatus(400);
         }
     };
@@ -52,10 +57,11 @@ class GroupService {
             const allGroups = await db.groups.findAll();
             if (allGroups?.length > 0) {
                 const sorted = allGroups.map((el: any) => el.NAME);
-                res.json(sorted);
+              return  res.json(sorted);
             }
             res.sendStatus(404);
-        } catch (e) {
+        } catch (e:any) {
+            errorHandler('getAllGroups',e.message)
             res.sendStatus(404);
         }
     };
@@ -77,9 +83,9 @@ class GroupService {
             await transaction.commit();
 
             return res.json('Ok');
-        } catch (e) {
+        } catch (e:any) {
             await transaction.rollback();
-            console.log(e);
+           errorHandler('addUsersToGroup',e.message,groupId,usersList)
             return res.sendStatus(500);
         }
     };

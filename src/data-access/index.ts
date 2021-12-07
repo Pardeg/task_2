@@ -5,7 +5,8 @@ import { userModel } from '../models/users.model';
 import { userGroups } from '../models/userGroups.model';
 const sequelize = new Sequelize('users', 'postgres', '1966619666', {
     host: 'localhost',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    logging:false
 });
 
  export const db: Record<string, any> = {};
