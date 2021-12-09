@@ -16,3 +16,8 @@ export const userCreateValidationSchema = Joi.object({
     password: Joi.string().alphanum().required(),
     age: Joi.number().min(4).max(130)
 });
+
+export const loginValidationSchema = Joi.object({
+    login: Joi.string().required(),
+    password: Joi.string().alphanum().required()
+});

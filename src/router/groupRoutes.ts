@@ -1,24 +1,25 @@
 import { Router } from 'express';
 import { groupService } from '../services/group';
+import { authService } from '../services/auth';
 
 const router = Router();
 
-router.put('/groups', (req, res) => {
+router.put('/groups', authService.auth, (req, res) => {
     const { name } = req.body;
     console.log(req);
     groupService.createGroup(name, res);
 });
 
-router.get('/groups/:id', (req, res) => {
+router.get('/groups/:id', authService.auth, (req, res) => {
     const { id } = req.params;
     groupService.getGroupById(id, res);
 });
 
-router.delete('/groups/:id', (req, res) => {
+router.delete('/groups/:id', authService.auth, (req, res) => {
     const { id } = req.params;
     groupService.deleteGroup(id, res);
 });
-router.get('/groups', (_, res) => {
+router.get('/groups', authService.auth, (_, res) => {
     groupService.getAllGroups(res);
 });
 
