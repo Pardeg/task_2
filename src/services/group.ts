@@ -5,7 +5,7 @@ import { db } from '../data-access';
 import { v4 as uuidv4 } from 'uuid';
 import Sequelize from 'sequelize';
 
-class GroupService {
+export class GroupService {
     basePremissions: string[];
     constructor() {
         this.basePremissions = ['WRITE', 'READ', 'DELETE', 'SHARE', 'UPLOAD_FILES'];
@@ -15,8 +15,8 @@ class GroupService {
         try {
             await db.groups.create({ GROUP_ID: uuidv4(), NAME: name, PERMISSIONS: this.basePremissions });
             res.json(`Group ${name} created`);
-        } catch (e:any) {
-            errorHandler('createGroup',e.message,name)
+        } catch (e: any) {
+            errorHandler('createGroup', e.message, name);
             res.sendStatus(500);
         }
     };
@@ -25,8 +25,8 @@ class GroupService {
         try {
             const { NAME } = await db.groups.findOne({ where: { GROUP_ID: id } });
             res.json(NAME);
-        } catch (e:any) {
-            errorHandler('getGroupById',e.message,id)
+        } catch (e: any) {
+            errorHandler('getGroupById', e.message, id);
             res.sendStatus(404);
         }
     };
@@ -36,8 +36,8 @@ class GroupService {
             const { id, name } = data;
             await db.groups.update({ NAME: name }, { where: { GROUP_ID: id } });
             res.json('Updated');
-        } catch (e:any) {
-            errorHandler('updateGroupInfo',e.message,data)
+        } catch (e: any) {
+            errorHandler('updateGroupInfo', e.message, data);
             res.sendStatus(404);
         }
     };
@@ -46,8 +46,8 @@ class GroupService {
         try {
             await db.groups.destroy({ where: { GROUP_ID: id } });
             res.sendStatus(200);
-        } catch (e:any) {
-            errorHandler('deleteGroup',e.nessage,id)
+        } catch (e: any) {
+            errorHandler('deleteGroup', e.nessage, id);
             res.sendStatus(400);
         }
     };
@@ -57,12 +57,13 @@ class GroupService {
             const allGroups = await db.groups.findAll();
             if (allGroups?.length > 0) {
                 const sorted = allGroups.map((el: any) => el.NAME);
-              return  res.json(sorted);
+                console.log(sorted);
+                return res.json(sorted);
             }
             res.sendStatus(404);
-        } catch (e:any) {
-            errorHandler('getAllGroups',e.message)
-            res.sendStatus(404);
+        } catch (e: any) {
+            errorHandler('getAllGroups', e.message);
+            return res.sendStatus(404);
         }
     };
 
@@ -83,9 +84,9 @@ class GroupService {
             await transaction.commit();
 
             return res.json('Ok');
-        } catch (e:any) {
+        } catch (e: any) {
             await transaction.rollback();
-           errorHandler('addUsersToGroup',e.message,groupId,usersList)
+            errorHandler('addUsersToGroup', e.message, groupId, usersList);
             return res.sendStatus(500);
         }
     };
